@@ -10,6 +10,8 @@
 #include "VBO.h"
 #include "EBO.h"
 
+//start clean code ... 
+
 const unsigned int width = 1280;
 const unsigned int height = 720;
 
@@ -38,18 +40,19 @@ GLuint cubeIndices[] =
 };
 
 int main()
-{
+{   
+    int testAnimation = 0;
     // Initialisation de GLFW
     glfwInit();
     glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    // Créer la fenêtre GLFW
+    // Crï¿½er la fenï¿½tre GLFW
     GLFWwindow* window = glfwCreateWindow(width, height, "Rotating Cubes", NULL, NULL);
     if (window == NULL)
     {
-        std::cout << "Erreur lors de la création de la fenêtre GLFW" << std::endl;
+        std::cout << "Erreur lors de la crï¿½ation de la fenï¿½tre GLFW" << std::endl;
         glfwTerminate();
         return -1;
     }
@@ -60,7 +63,7 @@ int main()
     // Compiler les shaders
     Shader shaderProgram("default.vert", "default.frag");
 
-    // Préparation du premier cube
+    // Prï¿½paration du premier cube
     VAO VAO1;
     VAO1.Bind();
     VBO VBO1(cubeVertices, sizeof(cubeVertices));
@@ -70,7 +73,7 @@ int main()
     VBO1.Unbind();
     EBO1.Unbind();
 
-    // Préparation du deuxième cube
+    // Prï¿½paration du deuxiï¿½me cube
     VAO VAO2;
     VAO2.Bind();
     VBO VBO2(cubeVertices, sizeof(cubeVertices));
@@ -81,46 +84,46 @@ int main()
     EBO2.Unbind();
 
     float rotationY = 0.0f; // Rotation pour le premier cube (autour de Y)
-    float rotationZ = 0.0f; // Rotation pour le deuxième cube (autour de Z)
-    float sceneRotation = 0.0f; // Rotation de la scène autour de Y (axe global)
+    float rotationZ = 0.0f; // Rotation pour le deuxiï¿½me cube (autour de Z)
+    float sceneRotation = 0.0f; // Rotation de la scï¿½ne autour de Y (axe global)
     double prevTime = glfwGetTime();
 
     // Boucle principale
     while (!glfwWindowShouldClose(window))
     {
-        // Gérer l'appui sur la touche ESC
+        // Gï¿½rer l'appui sur la touche ESC
         if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
             glfwSetWindowShouldClose(window, true);
 
-        // Effacer l'écran
+        // Effacer l'ï¿½cran
         glClearColor(0.07f, 0.13f, 0.17f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         // Activer le programme shader
         shaderProgram.Activate();
 
-        // Mise à jour de la rotation
+        // Mise ï¿½ jour de la rotation
         double crntTime = glfwGetTime();
         if (crntTime - prevTime >= 1 / 60)
         {
             rotationY += 0.5f; // Rotation autour de Y pour le premier cube
-            rotationZ += 0.5f; // Rotation autour de Z pour le deuxième cube
-            sceneRotation += 0.1f; // Rotation de la scène autour de Y (axe global)
+            rotationZ += 0.5f; // Rotation autour de Z pour le deuxiï¿½me cube
+            sceneRotation += 0.1f; // Rotation de la scï¿½ne autour de Y (axe global)
             prevTime = crntTime;
         }
 
-        // Création de la transformation de la caméra
+        // Crï¿½ation de la transformation de la camï¿½ra
         glm::mat4 view = glm::translate(glm::mat4(1.0f), glm::vec3(0.0f, 0.0f, -5.0f));
         glm::mat4 proj = glm::perspective(glm::radians(45.0f), (float)width / height, 0.1f, 100.0f);
 
-        // Rotation globale de la scène
+        // Rotation globale de la scï¿½ne
         glm::mat4 sceneRotationMatrix = glm::rotate(glm::mat4(1.0f), glm::radians(sceneRotation), glm::vec3(0.0f, 1.0f, 0.0f));
 
         // Dessiner le premier cube (rotation autour de Y)
         glm::mat4 model1 = glm::translate(glm::mat4(1.0f), glm::vec3(-1.5f, 1.0f, 0.0f)); // Positionner le premier cube plus haut
-        model1 = glm::rotate(model1, glm::radians(rotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotation locale autour de Y (gauche à droite)
-        model1 = glm::scale(model1, glm::vec3(0.5f)); // Redimensionner à 0.5
-        model1 = sceneRotationMatrix * model1; // Appliquer la rotation de la scène
+        model1 = glm::rotate(model1, glm::radians(rotationY), glm::vec3(0.0f, 1.0f, 0.0f)); // Rotation locale autour de Y (gauche ï¿½ droite)
+        model1 = glm::scale(model1, glm::vec3(0.5f)); // Redimensionner ï¿½ 0.5
+        model1 = sceneRotationMatrix * model1; // Appliquer la rotation de la scï¿½ne
         int modelLoc = glGetUniformLocation(shaderProgram.ID, "model");
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model1));
         int viewLoc = glGetUniformLocation(shaderProgram.ID, "view");
@@ -132,22 +135,22 @@ int main()
         VAO1.Bind();
         glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-        // Dessiner le deuxième cube (rotation autour de Z)
-        glm::mat4 model2 = glm::translate(glm::mat4(1.0f), glm::vec3(1.5f, -1.0f, 0.0f)); // Positionner le deuxième cube plus bas
-        model2 = glm::rotate(model2, glm::radians(rotationZ), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotation locale autour de Z (gauche à droite)
-        model2 = glm::scale(model2, glm::vec3(0.5f)); // Redimensionner à 0.5
-        model2 = sceneRotationMatrix * model2; // Appliquer la rotation de la scène
+        // Dessiner le deuxiï¿½me cube (rotation autour de Z)
+        glm::mat4 model2 = glm::translate(glm::mat4(1.0f), glm::vec3(1.5f, -1.0f, 0.0f)); // Positionner le deuxiï¿½me cube plus bas
+        model2 = glm::rotate(model2, glm::radians(rotationZ), glm::vec3(0.0f, 0.0f, 1.0f)); // Rotation locale autour de Z (gauche ï¿½ droite)
+        model2 = glm::scale(model2, glm::vec3(0.5f)); // Redimensionner ï¿½ 0.5
+        model2 = sceneRotationMatrix * model2; // Appliquer la rotation de la scï¿½ne
         glUniformMatrix4fv(modelLoc, 1, GL_FALSE, glm::value_ptr(model2));
-        glUniform3f(colorLoc, 0.0f, 0.0f, 1.0f); // Rouge pour le deuxième cube
+        glUniform3f(colorLoc, 0.0f, 0.0f, 1.0f); // Rouge pour le deuxiï¿½me cube
         VAO2.Bind();
         glDrawElements(GL_TRIANGLES, sizeof(cubeIndices) / sizeof(int), GL_UNSIGNED_INT, 0);
 
-        // Échanger les buffers et traiter les événements
+        // ï¿½changer les buffers et traiter les ï¿½vï¿½nements
         glfwSwapBuffers(window);
         glfwPollEvents();
     }
 
-    // Libérer les ressources
+    // Libï¿½rer les ressources
     VAO1.Delete();
     VBO1.Delete();
     EBO1.Delete();
